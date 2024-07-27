@@ -70,21 +70,126 @@ void printGraph(Graph* graph) {
     }
 }
 
-int main ()
-{
+//=====================================================//
+
+/*
+
+// Function to display the friend list of a given ID
+void displayFriendList(Graph* graph, int id) {
+    if (id >= graph->numVertices || id < 0) {
+        printf("ID does not exist.\n");
+        return;
+    }
+
+    printf("Friends of %d: ", id);
+    int count = 0;
+    Node* pCrawl = graph->array[id].head;
+    while (pCrawl) {
+        printf("%d ", pCrawl->id);
+        pCrawl = pCrawl->next;
+        count++;
+    }
+    printf("\nTotal friends: %d\n", count);
+}
+
+// Function to check if there is a connection between two IDs using BFS
+bool isConnected(Graph* graph, int a, int b) {
+    if (a >= graph->numVertices || b >= graph->numVertices || a < 0 || b < 0) {
+        printf("One or both IDs do not exist.\n");
+        return false;
+    }
+
+    bool* visited = (bool*)calloc(graph->numVertices, sizeof(bool));
+    int queue[graph->numVertices], front = 0, rear = 0;
+
+    visited[a] = true;
+    queue[rear++] = a;
+
+    while (front < rear) {
+        int current = queue[front++];
+        if (current == b) {
+            free(visited);
+            return true;
+        }
+
+        Node* pCrawl = graph->array[current].head;
+        while (pCrawl) {
+            int adj = pCrawl->id;
+            if (!visited[adj]) {
+                visited[adj] = true;
+                queue[rear++] = adj;
+            }
+            pCrawl = pCrawl->next;
+        }
+    }
+
+    free(visited);
+    return false;
+}
+
+// Function to display the connection between two IDs
+void displayConnection(Graph* graph, int a, int b) {
+    if (isConnected(graph, a, b)) {
+        printf("There is a connection between %d and %d.\n", a, b);
+    } else {
+        printf("No connection found between %d and %d.\n", a, b);
+    }
+}
+*/
+
+//=====================================================//
+
+
+int main() {
     char filename[100];
-    
-    printf("Enter filename: ");
-    scanf("%s", &filename);
+    printf("Enter the filename of the dataset: ");
+    scanf("%s", filename);
 
     Graph* graph = loadGraphFromFile(filename);
-    
-    if (graph != NULL) {
-        printGraph(graph);
+
+    if (graph == NULL) {
+        printf("Failed to load the graph.\n");
+        return 1;
     }
-    else
-    	printf("awmen");
-    
+
+    // Print the entire graph (for debugging or initial verification)
+    printGraph(graph);
+
+/*
+    int choice;
+    do {
+        printf("\nMenu:\n");
+        printf("1. Display Friend List\n");
+        printf("2. Display Connection\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            int id;
+            printf("Enter the ID: ");
+            scanf("%d", &id);
+            displayFriendList(graph, id);
+        } else if (choice == 2) {
+            int a, b;
+            printf("Enter the two IDs: ");
+            scanf("%d %d", &a, &b);
+            displayConnection(graph, a, b);
+        }
+    } while (choice != 3);
+*/
+    // Free memory
+    for (int i = 0; i < graph->numVertices; ++i) {
+        Node* pCrawl = graph->array[i].head;
+        while (pCrawl) {
+            Node* temp = pCrawl;
+            pCrawl = pCrawl->next;
+            free(temp);
+        }
+    }
+    free(graph->array);
+    free(graph);
+
     return 0;
 }
 	
