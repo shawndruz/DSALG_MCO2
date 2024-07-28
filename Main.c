@@ -22,14 +22,6 @@ Graph* createGraph(int numVertices) {
     return graph;
 }
 
-// checks if ID is within the data set
-bool isValidID(Graph* graph, int id) {
-    if (id < 0 || id >= graph->numVertices) {
-        return false;
-    }
-    return graph->array[id].head != NULL;
-}
-
 // Check if an edge already exists
 bool edgeExists(Node* head, int id) {
     Node* current = head;
@@ -115,6 +107,14 @@ void displayFriendList(Graph* graph) {
         printf("%d ", Friends[i]);
     }
     printf("\n");
+}
+
+// checks if ID is within the data set
+bool isValidID(Graph* graph, int id) {
+    if (id < 0 || id >= graph->numVertices) {
+        return false;
+    }
+    return graph->array[id].head != NULL;
 }
 
 // Function to check if there is a connection between two IDs using BFS
