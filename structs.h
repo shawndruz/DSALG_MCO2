@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #define MAX_FRIENDS 10000
 
-// Define the structure for a node in the adjacency list
+// Structure for a node in the adjacency list
 typedef struct Node {
     int id;
     struct Node* next;
@@ -27,7 +27,7 @@ typedef struct Graph {
 Node* createNode(int id);
 Graph* createGraph(int numVertices);
 void addEdge(Graph* graph, int src, int dest);
-Graph* loadGraphFromFile(char* filename);
+Graph* loadGraph(char* filename);
 void printGraph(Graph* graph);
 void displayFriendList(Graph* graph);
 bool isConnected(Graph* graph, int a, int b);
