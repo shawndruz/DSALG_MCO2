@@ -110,7 +110,7 @@ void displayFriendList(Graph* graph) {
         nFriends++;
     }
 
-    //sort, we can remove if not needed
+    //sort array of friends
 	for (j = 0; j < nFriends-1; j++) {
 		min = j; // min is the index of the lowest element
 		
@@ -186,7 +186,7 @@ void displayConnection(Graph* graph, int a, int b) {
 
 int main() {
     char filename[100];
-    printf("Enter the filename of the dataset: ");
+    printf("Input file path: ");
     scanf("%s", filename);
 
     Graph* graph = loadGraphFromFile(filename);
@@ -194,20 +194,20 @@ int main() {
     if (graph == NULL) {
         printf("Failed to load the graph.\n");
         return 1;
-    }
+    } else
+	printf("Graph loaded!");
 
     // Print the entire graph (for debugging or initial verification)
     printGraph(graph);
-
 
     int choice;
 	int a, b;
     
 	do {
-        printf("\nMenu:\n");
-        printf("1. Display Friend List\n");
-        printf("2. Display Connection\n");
-        printf("3. Exit\n");
+        printf("\nMAIN MENU\n");
+        printf("[1] Get friend list\n");
+        printf("[2] Get connection\n");
+        printf("[3] Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
