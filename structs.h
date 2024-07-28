@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#define MAX_FRIENDS 10000
 
 // Define the structure for a node in the adjacency list
 typedef struct Node {
