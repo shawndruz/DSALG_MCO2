@@ -16,10 +16,18 @@ Graph* createGraph(int numVertices) {
     Graph* graph = (Graph*)malloc(sizeof(Graph));
     graph->numVertices = numVertices;
     graph->array = (AdjList*)malloc(numVertices * sizeof(AdjList));
-    
-    for (int i = 0; i < numVertices; ++i)
+    int i;
+    for ( i = 0; i < numVertices; ++i)
         graph->array[i].head = NULL;
     return graph;
+}
+
+// checks if ID is within the data set
+bool isValidID(Graph* graph, int id) {
+    if (id < 0 || id >= graph->numVertices) {
+        return false;
+    }
+    return graph->array[id].head != NULL;
 }
 
 // Check if an edge already exists
@@ -64,7 +72,8 @@ Graph* loadGraph(char* filename) {
     Graph* graph = createGraph(n);
 
     int src, dest;
-    for (int i = 0; i < e; i++) {
+    int i;
+    for (i = 0; i < e; i++) {
         fscanf(file, "%d %d", &src, &dest);
         addEdge(graph, src, dest);
     }
@@ -75,7 +84,8 @@ Graph* loadGraph(char* filename) {
 
 // Print the graph
 void printGraph(Graph* graph) {
-    for (int v = 0; v < graph->numVertices; ++v) {
+	int v;
+    for ( v = 0; v < graph->numVertices; ++v) {
         Node* pCrawl = graph->array[v].head;
         printf("\n Adjacency list of vertex %d\n head ", v);
         while (pCrawl) {
@@ -91,11 +101,12 @@ void printGraph(Graph* graph) {
 // Function to display the friend list of a given ID
 void displayFriendList(Graph* graph) {
 
-    int i, j, k, min, temp, personID, nFriends = 0;
+    int i, personID, nFriends = 0;
     int Friends[MAX_FRIENDS];
 
     printf("Enter ID of person: ");
     scanf("%d", &personID);
+
 
     while (personID >= graph->numVertices || personID < 0) {
         printf("ID does not exist. Please try again.\n");
@@ -111,23 +122,6 @@ void displayFriendList(Graph* graph) {
         nFriends++;
     }
 
-    //selection sort
-	for (j = 0; j < nFriends-1; j++) {
-		min = j; 
-		
-		for (k = j+1; k < nFriends; k++) 
-			if (Friends[min] > Friends[k])
-				min = k;
-
-		// swap
-		if (j != min) {
-			temp = Friends[j];
-			Friends[j] = Friends[min];
-			Friends[min] = temp;
-		}
-		
-	}
-
     printf("\nPerson %d has %d friends!\n", personID, nFriends);
     printf("List of friends: ");
     
@@ -137,57 +131,62 @@ void displayFriendList(Graph* graph) {
     printf("\n");
 }
 
-
 // Function to check if there is a connection between two IDs using BFS
-bool isConnected(Graph* graph, int a, int b) {
-    if (a >= graph->numVertices || b >= graph->numVertices || a < 0 || b < 0) {
-        printf("One or both IDs do not exist.\n");
-        return false;
+bool isConnectedUtil(Graph* graph, int src, int dest, bool visited[], int path[], int* pathIndex) {
+    visited[src] = true;
+    path[(*pathIndex)++] = src;
+
+    if (src == dest)
+        return true;
+
+    Node* adjList = graph->array[src].head;
+    while (adjList != NULL) {
+        int adjVertex = adjList->id;
+        if (!visited[adjVertex]) {
+            if (isConnectedUtil(graph, adjVertex, dest, visited, path, pathIndex))
+                return true;
+        }
+        adjList = adjList->next;
     }
 
-    bool* visited = (bool*)calloc(graph->numVertices, sizeof(bool));
-    int queue[graph->numVertices], front = 0, rear = 0;
-
-    visited[a] = true;
-    queue[rear++] = a;
-
-    while (front < rear) {
-        int current = queue[front++];
-        if (current == b) {
-            free(visited);
-            return true;
-        }
-
-        Node* pCrawl = graph->array[current].head;
-        while (pCrawl) {
-            int adj = pCrawl->id;
-            if (!visited[adj]) {
-                visited[adj] = true;
-                queue[rear++] = adj;
-            }
-            pCrawl = pCrawl->next;
-        }
-    }
-
-    free(visited);
+    (*pathIndex)--;
+    visited[src] = false;
     return false;
 }
 
-// Function to display the connection between two IDs
 void displayConnection(Graph* graph, int a, int b) {
-    if (isConnected(graph, a, b)) {
-        printf("There is a connection between %d and %d.\n", a, b);
-    } else {
-        printf("No connection found between %d and %d.\n", a, b);
+    int* path = (int*)malloc(graph->numVertices * sizeof(int));
+    bool* visited = (bool*)malloc(graph->numVertices * sizeof(bool));
+    int i;
+    for ( i = 0; i < graph->numVertices; i++) {
+        visited[i] = false;
     }
+    int pathIndex = 0;
+
+    if (isConnectedUtil(graph, a, b, visited, path, &pathIndex)) {
+        printf("There is a connection from %d to %d!  \n", a, b);
+        for (i = 0; i < pathIndex; i++) {
+            if (i > 0) {
+                printf("%d is friends with %d", path[i-1], path[i]);
+                if (i < pathIndex - 1) {
+                    printf("\n");
+                }
+            }
+        }
+        printf("\n");
+    } else {
+        printf("get connection between %d and %d. No connection found.\n", a, b);
+    }
+
+    free(path);
+    free(visited);
 }
 
 //=====================================================//
 
-
 int main() {
     char filename[100];
-    printf("Enter the filename of the dataset: ");
+    printf("Input file path: ");
     scanf("%s", filename);
 
     Graph* graph = loadGraph(filename);
@@ -196,9 +195,8 @@ int main() {
         printf("Failed to load the graph.\n");
         return 1;
     }
-
-    // Print the entire graph (for checking)
-    // printGraph(graph);
+    else
+        printf("Graph loaded!");
 
 
     int choice;
@@ -209,23 +207,36 @@ int main() {
         printf("[1] Get friend list\n");
         printf("[2] Get connection\n");
         printf("[3] Exit\n");
-        printf("Enter your choice: ");
+        printf("\nEnter your choice: ");
         scanf("%d", &choice);
 
         switch (choice) {
 		case 1: 
-	            	displayFriendList(graph);
+	        displayFriendList(graph);
 			break;
    		case 2:
-            		printf("Enter the two IDs: ");
-            		scanf("%d %d", &a, &b);
+            	printf("Enter ID of first person: ");
+            	scanf("%d" , &a );
+            	printf("Enter ID of second person: ");
+            	scanf("%d" , &b );
+            	if(a == b)
+            	{
+            		printf("Cannot be the same ID.");
+            		break;
+		}
+		else if (!isValidID(graph, a) || !isValidID(graph, b)) {
+			printf("One or both IDs do not exist in the dataset.\n");
+  			break;
+    		}
+		else
             		displayConnection(graph, a, b);
-	      		break;
+	      	break;
         }
     } while (choice != 3);
 
     // Free memory
-    for (int i = 0; i < graph->numVertices; ++i) {
+    int i;
+    for ( i = 0; i < graph->numVertices; ++i) {
         Node* pCrawl = graph->array[i].head;
         while (pCrawl) {
             Node* temp = pCrawl;
@@ -238,16 +249,3 @@ int main() {
 
     return 0;
 }
-
-
-
-
-
-	
-	
-	
-	
-	
-	
-	
-	
