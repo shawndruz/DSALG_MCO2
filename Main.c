@@ -72,26 +72,56 @@ void printGraph(Graph* graph) {
 
 //=====================================================//
 
-/*
-
 // Function to display the friend list of a given ID
-void displayFriendList(Graph* graph, int id) {
-    if (id >= graph->numVertices || id < 0) {
-        printf("ID does not exist.\n");
-        return;
+void displayFriendList(Graph* graph) {
+
+    int i, j, k, min, temp, personID, nFriends = 0;
+    int Friends[MAX_FRIENDS];
+
+    printf("Enter ID of person: ");
+    scanf("%d", &personID);
+
+    while (personID >= graph->numVertices || personID < 0) {
+        printf("ID does not exist. Please try again.\n");
+        printf("Enter ID of person: ");
+        scanf("%d", &personID);
     }
 
-    printf("Friends of %d: ", id);
-    int count = 0;
-    Node* pCrawl = graph->array[id].head;
-    while (pCrawl) {
-        printf("%d ", pCrawl->id);
+    Node* pCrawl = graph->array[personID].head;
+    nFriends = 0;
+    while (pCrawl && nFriends < MAX_FRIENDS) {
+        Friends[nFriends] = pCrawl->id;
         pCrawl = pCrawl->next;
-        count++;
+        nFriends++;
     }
-    printf("\nTotal friends: %d\n", count);
+
+    //sort
+	for (j = 0; j < nFriends-1; j++) {
+		min = j; // min is the index of the lowest element
+		
+		for (k = j+1; k < nFriends; k++) 
+			if (Friends[min] > Friends[k])
+				min = k;
+
+		// swap
+		if (j != min) {
+			temp = Friends[j];
+			Friends[j] = Friends[min];
+			Friends[min] = temp;
+		}
+		
+	}
+
+    printf("\nPerson %d has %d friends!\n", personID, nFriends);
+    printf("List of friends: ");
+    
+    for(i = 0; i < nFriends; i++) {
+        printf("%d ", Friends[i]);
+    }
+    printf("\n");
 }
 
+/*
 // Function to check if there is a connection between two IDs using BFS
 bool isConnected(Graph* graph, int a, int b) {
     if (a >= graph->numVertices || b >= graph->numVertices || a < 0 || b < 0) {
@@ -165,16 +195,16 @@ int main() {
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
-        if (choice == 1) {
-            int id;
-            printf("Enter the ID: ");
-            scanf("%d", &id);
-            displayFriendList(graph, id);
-        } else if (choice == 2) {
-            int a, b;
-            printf("Enter the two IDs: ");
-            scanf("%d %d", &a, &b);
-            displayConnection(graph, a, b);
+        switch (choice) {
+		case 1: 
+	            	displayFriendList(graph);
+			break;
+   		case 2:
+	     		int a, b;
+            		printf("Enter the two IDs: ");
+            		scanf("%d %d", &a, &b);
+            		displayConnection(graph, a, b);
+	      		break;
         }
     } while (choice != 3);
 */
