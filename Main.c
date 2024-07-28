@@ -82,20 +82,6 @@ Graph* loadGraph(char* filename) {
     return graph;
 }
 
-// Print the graph
-void printGraph(Graph* graph) {
-	int v;
-    for ( v = 0; v < graph->numVertices; ++v) {
-        Node* pCrawl = graph->array[v].head;
-        printf("\n Adjacency list of vertex %d\n head ", v);
-        while (pCrawl) {
-            printf("-> %d", pCrawl->id);
-            pCrawl = pCrawl->next;
-        }
-        printf("\n");
-    }
-}
-
 //=====================================================//
 
 // Function to display the friend list of a given ID
@@ -202,36 +188,36 @@ int main() {
     int choice;
 	int a, b;
     
-	do {
-        printf("\nMAIN MENU\n");
-        printf("[1] Get friend list\n");
-        printf("[2] Get connection\n");
-        printf("[3] Exit\n");
-        printf("\nEnter your choice: ");
-        scanf("%d", &choice);
-
-        switch (choice) {
-		case 1: 
-	        displayFriendList(graph);
-			break;
-   		case 2:
-            	printf("Enter ID of first person: ");
-            	scanf("%d" , &a );
-            	printf("Enter ID of second person: ");
-            	scanf("%d" , &b );
-            	if(a == b)
-            	{
-            		printf("Cannot be the same ID.");
-            		break;
-		}
-		else if (!isValidID(graph, a) || !isValidID(graph, b)) {
-			printf("One or both IDs do not exist in the dataset.\n");
-  			break;
-    		}
-		else
-            		displayConnection(graph, a, b);
-	      	break;
-        }
+     do {
+	        printf("\nMAIN MENU\n");
+	        printf("[1] Get friend list\n");
+	        printf("[2] Get connection\n");
+	        printf("[3] Exit\n");
+	        printf("\nEnter your choice: ");
+	        scanf("%d", &choice);
+	
+	        switch (choice) {
+			case 1: 
+		        displayFriendList(graph);
+				break;
+	   		case 2:
+	            	printf("Enter ID of first person: ");
+	            	scanf("%d" , &a );
+	            	printf("Enter ID of second person: ");
+	            	scanf("%d" , &b );
+	            	if(a == b)
+	            	{
+	            		printf("Cannot be the same ID.");
+	            		break;
+			}
+			else if (!isValidID(graph, a) || !isValidID(graph, b)) {
+				printf("One or both IDs do not exist in the dataset.\n");
+	  			break;
+	    		}
+			else
+	            		displayConnection(graph, a, b);
+		      	break;
+	        }
     } while (choice != 3);
 
     // Free memory
