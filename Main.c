@@ -16,6 +16,7 @@ Graph* createGraph(int numVertices) {
     Graph* graph = (Graph*)malloc(sizeof(Graph));
     graph->numVertices = numVertices;
     graph->array = (AdjList*)malloc(numVertices * sizeof(AdjList));
+    
     for (int i = 0; i < numVertices; ++i)
         graph->array[i].head = NULL;
     return graph;
@@ -50,7 +51,7 @@ void addEdge(Graph* graph, int src, int dest) {
 }
 
 // Load the graph from a file
-Graph* loadGraphFromFile(char* filename) {
+Graph* loadGraph(char* filename) {
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
         printf("Error opening file\n");
@@ -110,7 +111,7 @@ void displayFriendList(Graph* graph) {
         nFriends++;
     }
 
-    //sort array of friends
+    //sort, we can remove if not needed
 	for (j = 0; j < nFriends-1; j++) {
 		min = j; // min is the index of the lowest element
 		
@@ -186,28 +187,28 @@ void displayConnection(Graph* graph, int a, int b) {
 
 int main() {
     char filename[100];
-    printf("Input file path: ");
+    printf("Enter the filename of the dataset: ");
     scanf("%s", filename);
 
-    Graph* graph = loadGraphFromFile(filename);
+    Graph* graph = loadGraph(filename);
 
     if (graph == NULL) {
         printf("Failed to load the graph.\n");
         return 1;
-    } else
-	printf("Graph loaded!");
+    }
 
-    // Print the entire graph (for debugging or initial verification)
-    printGraph(graph);
+    // Print the entire graph (for checking)
+    // printGraph(graph);
+
 
     int choice;
 	int a, b;
     
 	do {
-        printf("\nMAIN MENU\n");
-        printf("[1] Get friend list\n");
-        printf("[2] Get connection\n");
-        printf("[3] Exit\n");
+        printf("\nMenu:\n");
+        printf("1. Display Friend List\n");
+        printf("2. Display Connection\n");
+        printf("3. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -237,6 +238,7 @@ int main() {
 
     return 0;
 }
+
 
 
 
