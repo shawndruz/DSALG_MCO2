@@ -118,56 +118,97 @@ bool isValidID(Graph* graph, int id) {
 }
 
 // Function to check if there is a connection between two IDs using BFS
-bool isConnectedUtil(Graph* graph, int src, int dest, bool visited[], int path[], int* pathIndex) {
-    visited[src] = true;
-    path[(*pathIndex)++] = src;
-
-    if (src == dest)
+// Function to check if there is a connection between two IDs using BFS
+bool isConnectedUtil(Graph* graph, int src, int dest, int* path, int* pathIndex) {
+    if (src == dest) {
+        path[(*pathIndex)++] = src;
         return true;
-
-    Node* adjList = graph->array[src].head;
-    while (adjList != NULL) {
-        int adjVertex = adjList->id;
-        if (!visited[adjVertex]) {
-            if (isConnectedUtil(graph, adjVertex, dest, visited, path, pathIndex))
-                return true;
-        }
-        adjList = adjList->next;
     }
 
-    (*pathIndex)--;
-    visited[src] = false;
-    return false;
-}
-
-void displayConnection(Graph* graph, int a, int b) {
-    int* path = (int*)malloc(graph->numVertices * sizeof(int));
     bool* visited = (bool*)malloc(graph->numVertices * sizeof(bool));
     int i;
     for ( i = 0; i < graph->numVertices; i++) {
         visited[i] = false;
     }
-    int pathIndex = 0;
 
-    if (isConnectedUtil(graph, a, b, visited, path, &pathIndex)) {
+    int* queue = (int*)malloc(graph->numVertices * sizeof(int));
+    int front = 0, rear = 0;
+
+    visited[src] = true;
+    queue[rear++] = src;
+    int* previous = (int*)malloc(graph->numVertices * sizeof(int));
+    for ( i = 0; i < graph->numVertices; i++) {
+        previous[i] = -1;
+    }
+
+    while (front != rear) {
+        int current = queue[front++];
+
+        Node* adjList = graph->array[current].head;
+        while (adjList != NULL) {
+            int adjVertex = adjList->id;
+            if (!visited[adjVertex]) {
+                visited[adjVertex] = true;
+                previous[adjVertex] = current;
+                queue[rear++] = adjVertex;
+
+                if (adjVertex == dest) {
+                    // Build path from src to dest
+                    int crawl = dest;
+                    while (crawl != -1) {
+                        path[(*pathIndex)++] = crawl;
+                        crawl = previous[crawl];
+                    }
+
+                    // Reverse path to get from src to dest
+                    for ( i = 0; i < (*pathIndex) / 2; i++) {
+                        int temp = path[i];
+                        path[i] = path[(*pathIndex) - i - 1];
+                        path[(*pathIndex) - i - 1] = temp;
+                    }
+
+                    free(queue);
+                    free(visited);
+                    free(previous);
+                    return true;
+                }
+            }
+            adjList = adjList->next;
+        }
+    }
+
+    free(queue);
+    free(visited);
+    free(previous);
+    return false;
+}
+void displayConnection(Graph* graph, int a, int b) {
+    if (!isValidID(graph, a) || !isValidID(graph, b)) {
+        printf("One or both IDs do not exist in the dataset.\n");
+        return;
+    }
+
+    int* path = (int*)malloc(graph->numVertices * sizeof(int));
+    int pathIndex = 0;
+    int i;
+
+    if (isConnectedUtil(graph, a, b, path, &pathIndex)) {
         printf("There is a connection from %d to %d!  \n", a, b);
-        for (i = 0; i < pathIndex; i++) {
+        for ( i = 0; i < pathIndex; i++) {
             if (i > 0) {
-                printf("%d is friends with %d", path[i-1], path[i]);
+                printf("%d is friends with %d", path[i - 1], path[i]);
                 if (i < pathIndex - 1) {
-                    printf("\n");
+                    printf(" \n ");
                 }
             }
         }
         printf("\n");
     } else {
-        printf("Could not get connection between %d and %d. No connection found.\n", a, b);
+        printf("cannot find a connection between %d and %d. \n", a, b);
     }
 
     free(path);
-    free(visited);
 }
-
 //=====================================================//
 
 int main() {
