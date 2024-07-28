@@ -205,10 +205,10 @@ int main() {
 	int a, b;
     
 	do {
-        printf("\nMenu:\n");
-        printf("1. Display Friend List\n");
-        printf("2. Display Connection\n");
-        printf("3. Exit\n");
+        printf("\nMAIN MENU\n");
+        printf("[1] Get friend list\n");
+        printf("[2] Get connection\n");
+        printf("[3] Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
