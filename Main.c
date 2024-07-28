@@ -161,7 +161,7 @@ void displayConnection(Graph* graph, int a, int b) {
         }
         printf("\n");
     } else {
-        printf("get connection between %d and %d. No connection found.\n", a, b);
+        printf("Could not get connection between %d and %d. No connection found.\n", a, b);
     }
 
     free(path);
