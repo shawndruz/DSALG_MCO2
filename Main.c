@@ -111,9 +111,9 @@ void displayFriendList(Graph* graph) {
         nFriends++;
     }
 
-    //sort, we can remove if not needed
+    //selection sort
 	for (j = 0; j < nFriends-1; j++) {
-		min = j; // min is the index of the lowest element
+		min = j; 
 		
 		for (k = j+1; k < nFriends; k++) 
 			if (Friends[min] > Friends[k])
