@@ -225,25 +225,7 @@ int main() {
 
 
 
-/*
-int main ()
-{
-    char filename[100];
-    
-    printf("Enter filename: ");
-    scanf("%s", &filename);
 
-    Graph* graph = loadGraphFromFile(filename);
-    
-    if (graph != NULL) {
-        printGraph(graph);
-    }
-    else
-    	printf("awmen");
-    
-    return 0;
-}
-*/	
 	
 	
 	
