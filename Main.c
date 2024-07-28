@@ -21,17 +21,32 @@ Graph* createGraph(int numVertices) {
     return graph;
 }
 
+// Check if an edge already exists
+bool edgeExists(Node* head, int id) {
+    Node* current = head;
+    while (current != NULL) {
+        if (current->id == id)
+            return true;
+        current = current->next;
+    }
+    return false;
+}
+
 // Add an edge to the graph
 void addEdge(Graph* graph, int src, int dest) {
-    // Add an edge from src to dest
-    Node* newNode = createNode(dest);
-    newNode->next = graph->array[src].head;
-    graph->array[src].head = newNode;
+    // Add an edge from src to dest if it doesn't already exist
+    if (!edgeExists(graph->array[src].head, dest)) {
+        Node* newNode = createNode(dest);
+        newNode->next = graph->array[src].head;
+        graph->array[src].head = newNode;
+    }
 
-    // Since it's an undirected graph, add an edge from dest to src also
-    newNode = createNode(src);
-    newNode->next = graph->array[dest].head;
-    graph->array[dest].head = newNode;
+    // Since it's an undirected graph, add an edge from dest to src if it doesn't already exist
+    if (!edgeExists(graph->array[dest].head, src)) {
+        Node* newNode = createNode(src);
+        newNode->next = graph->array[dest].head;
+        graph->array[dest].head = newNode;
+    }
 }
 
 // Load the graph from a file
@@ -44,7 +59,7 @@ Graph* loadGraphFromFile(char* filename) {
 
     int n, e;
     fscanf(file, "%d %d", &n, &e);
-    
+
     Graph* graph = createGraph(n);
 
     int src, dest;
@@ -121,7 +136,7 @@ void displayFriendList(Graph* graph) {
     printf("\n");
 }
 
-/*
+
 // Function to check if there is a connection between two IDs using BFS
 bool isConnected(Graph* graph, int a, int b) {
     if (a >= graph->numVertices || b >= graph->numVertices || a < 0 || b < 0) {
@@ -165,7 +180,6 @@ void displayConnection(Graph* graph, int a, int b) {
         printf("No connection found between %d and %d.\n", a, b);
     }
 }
-*/
 
 //=====================================================//
 
@@ -185,9 +199,11 @@ int main() {
     // Print the entire graph (for debugging or initial verification)
     printGraph(graph);
 
-/*
+
     int choice;
-    do {
+	int a, b;
+    
+	do {
         printf("\nMenu:\n");
         printf("1. Display Friend List\n");
         printf("2. Display Connection\n");
@@ -200,14 +216,13 @@ int main() {
 	            	displayFriendList(graph);
 			break;
    		case 2:
-	     		int a, b;
             		printf("Enter the two IDs: ");
             		scanf("%d %d", &a, &b);
             		displayConnection(graph, a, b);
 	      		break;
         }
     } while (choice != 3);
-*/
+
     // Free memory
     for (int i = 0; i < graph->numVertices; ++i) {
         Node* pCrawl = graph->array[i].head;
