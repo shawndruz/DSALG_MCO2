@@ -95,7 +95,7 @@ void displayFriendList(Graph* graph) {
         nFriends++;
     }
 
-    //sort
+    //sort, we can remove if not needed
 	for (j = 0; j < nFriends-1; j++) {
 		min = j; // min is the index of the lowest element
 		
